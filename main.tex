@@ -1,4 +1,4 @@
-\documentclass[12pt, a4paper]{article}
+\documentclass[12pt, a4paper, bahasa]{article}
 
 \usepackage[margin=2.5cm]{geometry} 
 \usepackage{fancyhdr}               
@@ -8,6 +8,18 @@
 \usepackage{titlesec}
 \usepackage{wrapfig}         
 \usepackage{subcaption}
+\usepackage{csquotes}
+\usepackage{amsmath}
+\usepackage[
+    backend=biber,
+    style=ieee,
+    language=auto,
+    autolang=other
+]{biblatex}
+
+\addbibresource{refs.bib}
+
+
 
 % Pengaturan Header dan Footer
 \pagestyle{fancy}
@@ -15,19 +27,467 @@
 \lhead{\textbf{Nama:} Khalilullah Al Faath}   
 \rhead{\textbf{NIM:} 25/566643/PPA/07139}        
 \renewcommand{\headrulewidth}{0.4pt}         
-\renewcommand{\footrulewidth}{0.4pt}         
+\renewcommand{\footrulewidth}{0.4pt}
+
+\renewcommand{\tablename}{Tabel}
+\renewcommand{\figurename}{Gambar}
 
 
 \begin{document}
 
 \begin{center}
-    \large \textbf{Judul Laporan} \\[0.2cm]
-    \large Nama Mata Kuliah  \\[0.5cm]
+    \large \textbf{Tugas Analisis Program Robot} \\[0.2cm]
+    \large Pemrograman Robotika  \\[0.5cm]
 \end{center}
 
+Pada tugas ini diminta untuk menghitung manual dan membandingkan hasilnya.
 
-\section{Pranala Kode}
-Hasil \textit{running} implementasi kode dapat diakses di pranala repositori GitHub berikut \url{https://github.com/khalilullahalfaath/comparing-ranked-retrieval-models/blob/main/1_STBI.ipynb}.
+\section*{Contoh 1}
+\textbf{Diketahui:}
+\begin{itemize}
+    \item Panjang $DOF = 2$
+    \item Titik referensi = 0,0
+    \item Panjang Link 1 dari titik referensi ($L_1$) = 10
+    \item Sudut putar 1 ($\alpha_1$) = $30^\circ$
+    \item Panjang Link 2 dari titik referensi ($L_2$) = 20
+    \item Sudut putar 2 ($\alpha_2$) = $45^\circ$
+\end{itemize}
+
+\noindent \textbf{Ditanya: Posisi end-effector?}
+\vspace{0.5cm} \\
+\noindent \textbf{Penyelesaian:} \\
+Posisi ujung (\textit{end-effector}) dapat dihitung dengan menjumlahkan proyeksi vektor dari masing-masing \textit{link}. Persamaan posisinya adalah:
+\begin{align*}
+    x & = L_1 \cos(\alpha_1) + L_2 \cos(\alpha_1 + \alpha_2) \\
+    y & = L_1 \sin(\alpha_1) + L_2 \sin(\alpha_1 + \alpha_2)
+\end{align*}
+
+ini dapat dituliskan dalam bentuk matriks posisi $P$:
+\begin{equation}
+    P = \begin{bmatrix} x \\ y \end{bmatrix} =
+    \begin{bmatrix}
+        L_1 \cos(\alpha_1) + L_2 \cos(\alpha_1 + \alpha_2) \\
+        L_1 \sin(\alpha_1) + L_2 \sin(\alpha_1 + \alpha_2)
+    \end{bmatrix}
+\end{equation}
+
+Substitusi nilai yang diketahui:
+\begin{equation}
+    P = \begin{bmatrix}
+        10 \cos(30^\circ) + 20 \cos(30^\circ + 45^\circ) \\
+        10 \sin(30^\circ) + 20 \sin(30^\circ + 45^\circ)
+    \end{bmatrix}
+\end{equation}
+
+\begin{equation}
+    P = \begin{bmatrix}
+        10 \cos(30^\circ) + 20 \cos(75^\circ) \\
+        10 \sin(30^\circ) + 20 \sin(75^\circ)
+    \end{bmatrix}
+\end{equation}
+
+Masukkan nilainya:
+\begin{equation}
+    P = \begin{bmatrix}
+        10(0.866) + 20(0.2588) \\
+        10(0.5) + 20(0.9659)
+    \end{bmatrix}
+\end{equation}
+
+\begin{equation}
+    P = \begin{bmatrix}
+        8.66 + 5.176 \\
+        5 + 19.318
+    \end{bmatrix}
+\end{equation}
+
+\begin{equation}
+    P = \begin{bmatrix}
+        13.836 \\
+        24.318
+    \end{bmatrix}
+\end{equation}
+
+Jadi, posisi \textit{end-effector} robot tersebut berada pada koordinat \textbf{(13.84, 24.32)}.
+
+\section*{Contoh 2}
+\textbf{Diketahui:}
+\begin{itemize}
+    \item Panjang $DOF = 3$
+    \item Titik referensi = 0,0
+    \item Panjang Link 1 dari titik referensi ($L_1$) = 2
+    \item Sudut putar 1 ($\alpha_1$) = $30^\circ$
+    \item Panjang Link 2 dari titik referensi ($L_2$) = 4
+    \item Sudut putar 2 ($\alpha_2$) = $10^\circ$
+    \item Panjang Link 3 dari titik referensi ($L_3$) = 2
+    \item Sudut putar 3 ($\alpha_3$) = $20^\circ$
+\end{itemize}
+
+\noindent \textbf{Ditanya: Posisi end-effector?}
+\vspace{0.5cm}
+
+\noindent \textbf{Penyelesaian:}
+
+Pertama, tentukan sudut absolut untuk masing-masing \textit{link} terhadap sumbu X (titik referensi):
+\begin{itemize}
+    \item Sudut absolut Link 1: $\theta_1 = \alpha_1 = 30^\circ$
+    \item Sudut absolut Link 2: $\theta_2 = \alpha_1 + \alpha_2 = 30^\circ + 10^\circ = 40^\circ$
+    \item Sudut absolut Link 3: $\theta_3 = \alpha_1 + \alpha_2 + \alpha_3 = 30^\circ + 10^\circ + 20^\circ = 60^\circ$
+\end{itemize}
+
+Posisi akhir $P$ dapat dihitung dengan menjumlahkan proyeksi komponen X dan Y dari ketiga \textit{link}:
+\begin{equation}
+P = \begin{bmatrix} x \\ y \end{bmatrix} = 
+\begin{bmatrix} 
+L_1 \cos(\theta_1) + L_2 \cos(\theta_2) + L_3 \cos(\theta_3) \\ 
+L_1 \sin(\theta_1) + L_2 \sin(\theta_2) + L_3 \sin(\theta_3) 
+\end{bmatrix}
+\end{equation}
+
+Substitusi nilai $L$ dan sudut $\theta$:
+\begin{equation}
+P = \begin{bmatrix} 
+2 \cos(30^\circ) + 4 \cos(40^\circ) + 2 \cos(60^\circ) \\ 
+2 \sin(30^\circ) + 4 \sin(40^\circ) + 2 \sin(60^\circ) 
+\end{bmatrix}
+\end{equation}
+
+Masukkan nilainya:
+\begin{equation}
+P = \begin{bmatrix} 
+2(0.866) + 4(0.766) + 2(0.5) \\ 
+2(0.5) + 4(0.643) + 2(0.866) 
+\end{bmatrix}
+\end{equation}
+
+Lakukan perkalian pada masing-masing elemen:
+\begin{equation}
+P = \begin{bmatrix} 
+1.732 + 3.064 + 1 \\ 
+1 + 2.572 + 1.732 
+\end{bmatrix}
+\end{equation}
+
+Jumlahkan seluruh komponen X dan Y:
+\begin{equation}
+P = \begin{bmatrix} 
+5.796 \\ 
+5.304 
+\end{bmatrix}
+\end{equation}
+
+Jadi, posisi \textit{end-effector} dari manipulator 3-DOF tersebut berada pada titik koordinat \textbf{(5.80, 5.30)}.
+
+\section*{Contoh 3: Menambah Sudut Putar Body}
+\textbf{Diketahui:}
+\begin{itemize}
+    \item Panjang $DOF = 3$
+    \item Titik referensi = 0,0
+    \item Sudut Putar Body = $10^\circ$
+    \item Panjang Link 1 dari titik referensi ($L_1$) = 2
+    \item Sudut putar 1 ($\alpha_1$) = $30^\circ$
+    \item Panjang Link 2 dari titik referensi ($L_2$) = 4
+    \item Sudut putar 2 ($\alpha_2$) = $10^\circ$
+    \item Panjang Link 3 dari titik referensi ($L_3$) = 2
+    \item Sudut putar 3 ($\alpha_3$) = $20^\circ$
+\end{itemize}
+
+\noindent \textbf{Ditanya: Posisi end-effector?}
+\vspace{0.5cm}
+
+\noindent \textbf{Penyelesaian:}
+
+Karena terdapat Sudut Putar Body, sudut ini akan menjadi sudut dasar yang menambah seluruh sudut absolut dari masing-masing \textit{link}. Terlebih dahulu dihitung sudut absolutnya terhadap titik referensi sumbu X:
+\begin{itemize}
+    \item Sudut absolut Link 1: $\theta_1 = \text{Sudut Body} + \alpha_1 = 10^\circ + 30^\circ = 40^\circ$
+    \item Sudut absolut Link 2: $\theta_2 = \theta_1 + \alpha_2 = 40^\circ + 10^\circ = 50^\circ$
+    \item Sudut absolut Link 3: $\theta_3 = \theta_2 + \alpha_3 = 50^\circ + 20^\circ = 70^\circ$
+\end{itemize}
+
+Posisi akhir $P$ dapat dihitung dengan persamaan matriks penjumlahan proyeksi vektor:
+\begin{equation}
+P = \begin{bmatrix} x \\ y \end{bmatrix} = 
+\begin{bmatrix} 
+L_1 \cos(\theta_1) + L_2 \cos(\theta_2) + L_3 \cos(\theta_3) \\ 
+L_1 \sin(\theta_1) + L_2 \sin(\theta_2) + L_3 \sin(\theta_3) 
+\end{bmatrix}
+\end{equation}
+
+Substitusi nilai $L$ dan sudut absolut $\theta$ yang baru:
+\begin{equation}
+P = \begin{bmatrix} 
+2 \cos(40^\circ) + 4 \cos(50^\circ) + 2 \cos(70^\circ) \\ 
+2 \sin(40^\circ) + 4 \sin(50^\circ) + 2 \sin(70^\circ) 
+\end{bmatrix}
+\end{equation}
+
+Masukkan nilainya:
+\begin{equation}
+P = \begin{bmatrix} 
+2(0.7660) + 4(0.6428) + 2(0.3420) \\ 
+2(0.6428) + 4(0.7660) + 2(0.9397) 
+\end{bmatrix}
+\end{equation}
+
+Lakukan perkalian pada masing-masing elemen:
+\begin{equation}
+P = \begin{bmatrix} 
+1.532 + 2.571 + 0.684 \\ 
+1.286 + 3.064 + 1.879 
+\end{bmatrix}
+\end{equation}
+
+Jumlahkan seluruh komponen X dan Y:
+\begin{equation}
+P = \begin{bmatrix} 
+4.787 \\ 
+6.229 
+\end{bmatrix}
+\end{equation}
+
+Jadi, dengan penambahan sudut putar \textit{body} sebesar $10^\circ$, posisi \textit{end-effector} dari manipulator 3-DOF tersebut berada pada titik koordinat \textbf{(4.79, 6.23)}.
+
+\section*{Contoh 4: Posisi  awal $x = 15, y=0$}
+\textbf{Diketahui:}
+\begin{itemize}
+    \item Panjang $DOF = 3$
+    \item Titik referensi = 15,0
+    \item Panjang Link 1 dari titik referensi ($L_1$) = 2
+    \item Sudut putar 1 ($\alpha_1$) = $30^\circ$
+    \item Panjang Link 2 dari titik referensi ($L_2$) = 4
+    \item Sudut putar 2 ($\alpha_2$) = $10^\circ$
+    \item Panjang Link 3 dari titik referensi ($L_3$) = 2
+    \item Sudut putar 3 ($\alpha_3$) = $20^\circ$
+\end{itemize}
+
+\noindent \textbf{Ditanya: Posisi end-effector?}
+\vspace{0.5cm}
+
+\noindent \textbf{Penyelesaian:}
+
+Pada kasus ini, titik referensi (basis) manipulator tidak berada pada pusat koordinat $(0,0)$, melainkan bergeser sejauh 15 satuan pada sumbu X menjadi $(15,0)$. Oleh karena itu, vektor posisi awal ini harus ditambahkan ke dalam persamaan kinematika.
+
+Pertama, ditentukan sudut absolut untuk masing-masing \textit{link} terhadap sumbu X:
+\begin{itemize}
+    \item Sudut absolut Link 1: $\theta_1 = \alpha_1 = 30^\circ$
+    \item Sudut absolut Link 2: $\theta_2 = \alpha_1 + \alpha_2 = 30^\circ + 10^\circ = 40^\circ$
+    \item Sudut absolut Link 3: $\theta_3 = \alpha_1 + \alpha_2 + \alpha_3 = 30^\circ + 10^\circ + 20^\circ = 60^\circ$
+\end{itemize}
+
+Posisi akhir $P$ dihitung dengan menjumlahkan vektor titik referensi awal ($P_0$) dengan vektor perpindahan dari ketiga \textit{link}:
+\begin{equation}
+P = P_0 + \begin{bmatrix} 
+L_1 \cos(\theta_1) + L_2 \cos(\theta_2) + L_3 \cos(\theta_3) \\ 
+L_1 \sin(\theta_1) + L_2 \sin(\theta_2) + L_3 \sin(\theta_3) 
+\end{bmatrix}
+\end{equation}
+
+Substitusi nilai titik referensi, panjang $L$, dan sudut absolut $\theta$:
+\begin{equation}
+P = \begin{bmatrix} 15 \\ 0 \end{bmatrix} + 
+\begin{bmatrix} 
+2 \cos(30^\circ) + 4 \cos(40^\circ) + 2 \cos(60^\circ) \\ 
+2 \sin(30^\circ) + 4 \sin(40^\circ) + 2 \sin(60^\circ) 
+\end{bmatrix}
+\end{equation}
+
+Masukkan nilainya:
+\begin{equation}
+P = \begin{bmatrix} 15 \\ 0 \end{bmatrix} + 
+\begin{bmatrix} 
+2(0.866) + 4(0.766) + 2(0.5) \\ 
+2(0.5) + 4(0.643) + 2(0.866) 
+\end{bmatrix}
+\end{equation}
+
+Lakukan perkalian pada masing-masing elemen \textit{link}:
+\begin{equation}
+P = \begin{bmatrix} 15 \\ 0 \end{bmatrix} + 
+\begin{bmatrix} 
+1.732 + 3.064 + 1 \\ 
+1 + 2.572 + 1.732 
+\end{bmatrix}
+\end{equation}
+
+Jumlahkan seluruh komponen \textit{link}:
+\begin{equation}
+P = \begin{bmatrix} 15 \\ 0 \end{bmatrix} + 
+\begin{bmatrix} 
+5.796 \\ 
+5.304 
+\end{bmatrix}
+\end{equation}
+
+Terakhir, jumlahkan dengan titik referensi awal:
+\begin{equation}
+P = \begin{bmatrix} 
+15 + 5.796 \\ 
+0 + 5.304 
+\end{bmatrix} =
+\begin{bmatrix} 
+20.796 \\ 
+5.304 
+\end{bmatrix}
+\end{equation}
+
+Jadi, dengan menggeser titik referensi awal ke $(15,0)$, posisi \textit{end-effector} dari manipulator 3-DOF tersebut berada pada titik koordinat \textbf{(20.80, 5.30)}.
+
+\section*{Contoh 5: Manipulator Planar 3-DOF}
+\textbf{Diketahui:}
+\begin{itemize}
+    \item Jumlah $DOF = 3$
+    \item Titik referensi = 0,0
+    \item Panjang Link 1 dari titik referensi ($L_1$) = 2
+    \item Sudut putar 1 ($\alpha_1$) = $30^\circ$
+    \item Panjang kedalaman sumbu $z_0$ ($d_1$) = 0
+    \item Panjang Link 2 dari titik referensi ($L_2$) = 4
+    \item Sudut putar 2 ($\alpha_2$) = $10^\circ$
+    \item Panjang kedalaman sumbu $z_1$ ($d_2$) = 0
+    \item Panjang Link 3 dari titik referensi ($L_3$) = 2
+    \item Sudut putar 3 ($\alpha_3$) = $20^\circ$
+    \item Panjang kedalaman sumbu $z_2$ ($d_3$) = 0
+\end{itemize}
+
+\noindent \textbf{Ditanya: Posisi end-effector?}
+\vspace{0.5cm}
+
+\noindent \textbf{Penyelesaian:}
+
+Kehadiran parameter kedalaman sumbu $z$ ($d_i$) menunjukkan bahwa kita meninjau ruang 3D. Namun, karena nilai semua kedalaman $d_i = 0$, maka manipulator ini terbukti bergerak murni pada bidang planar 2D (sumbu X dan Y), sehingga nilai akhirnya pada sumbu $Z$ adalah $0$.
+
+Pertama, kita tentukan sudut absolut untuk masing-masing \textit{link} terhadap sumbu X:
+\begin{itemize}
+    \item Sudut absolut Link 1: $\theta_1 = \alpha_1 = 30^\circ$
+    \item Sudut absolut Link 2: $\theta_2 = \alpha_1 + \alpha_2 = 30^\circ + 10^\circ = 40^\circ$
+    \item Sudut absolut Link 3: $\theta_3 = \alpha_1 + \alpha_2 + \alpha_3 = 30^\circ + 10^\circ + 20^\circ = 60^\circ$
+\end{itemize}
+
+Susun matriks posisi 3D \textit{end-effector} $P$ yang mencakup sumbu $x$, $y$, dan $z$:
+\begin{equation}
+P = \begin{bmatrix} x \\ y \\ z \end{bmatrix} = 
+\begin{bmatrix} 
+L_1 \cos(\theta_1) + L_2 \cos(\theta_2) + L_3 \cos(\theta_3) \\ 
+L_1 \sin(\theta_1) + L_2 \sin(\theta_2) + L_3 \sin(\theta_3) \\
+d_1 + d_2 + d_3
+\end{bmatrix}
+\end{equation}
+
+Substitusi nilai yang diketahui ke dalam matriks:
+\begin{equation}
+P = \begin{bmatrix} 
+2 \cos(30^\circ) + 4 \cos(40^\circ) + 2 \cos(60^\circ) \\ 
+2 \sin(30^\circ) + 4 \sin(40^\circ) + 2 \sin(60^\circ) \\
+0 + 0 + 0
+\end{bmatrix}
+\end{equation}
+
+Masukkan nilainya:
+\begin{equation}
+P = \begin{bmatrix} 
+2(0.866) + 4(0.766) + 2(0.5) \\ 
+2(0.5) + 4(0.643) + 2(0.866) \\
+0
+\end{bmatrix}
+\end{equation}
+
+Lakukan perkalian pada masing-masing elemen \textit{link}:
+\begin{equation}
+P = \begin{bmatrix} 
+1.732 + 3.064 + 1 \\ 
+1 + 2.572 + 1.732 \\
+0
+\end{bmatrix}
+\end{equation}
+
+Jumlahkan seluruh komponen untuk mendapatkan posisi akhir:
+\begin{equation}
+P = \begin{bmatrix} 
+5.796 \\ 
+5.304 \\
+0
+\end{bmatrix}
+\end{equation}
+
+Jadi, posisi \textit{end-effector} dari manipulator planar 3-DOF tersebut berada pada titik koordinat 3D \textbf{(5.80, 5.30, 0)}.
+
+\section*{Contoh 6: Lengan Artikulasi Kinematik}
+\textbf{Diketahui:}
+\begin{itemize}
+    \item Jumlah $DOF = 3$
+    \item Titik referensi = 0,0
+    \item Panjang Link 1 dari titik referensi ($L_1$) = 0
+    \item Sudut putar 1 ($\alpha_1$) = $0^\circ$
+    \item Panjang kedalaman sumbu $z_0$ ($d_1$) = 0.48
+    \item Panjang Link 2 dari titik referensi ($L_2$) = 0.75
+    \item Sudut putar 2 ($\alpha_2$) = $0^\circ$
+    \item Panjang kedalaman sumbu $z_1$ ($d_2$) = 0.174
+    \item Panjang Link 3 dari titik referensi ($L_3$) = 0.65
+    \item Sudut putar 3 ($\alpha_3$) = $0^\circ$
+    \item Panjang kedalaman sumbu $z_2$ ($d_3$) = 0
+\end{itemize}
+
+\noindent \textbf{Ditanya: Posisi end-effector?}
+\vspace{0.5cm}
+
+\noindent \textbf{Penyelesaian:}
+
+Sama seperti contoh sebelumnya, ditentukan sudut absolut untuk masing-masing \textit{link} terhadap sumbu referensi X:
+\begin{itemize}
+    \item Sudut absolut Link 1: $\theta_1 = \alpha_1 = 0^\circ$
+    \item Sudut absolut Link 2: $\theta_2 = \alpha_1 + \alpha_2 = 0^\circ + 0^\circ = 0^\circ$
+    \item Sudut absolut Link 3: $\theta_3 = \alpha_1 + \alpha_2 + \alpha_3 = 0^\circ + 0^\circ + 0^\circ = 0^\circ$
+\end{itemize}
+
+Susun matriks posisi 3D \textit{end-effector} $P$ yang mencakup sumbu $x$, $y$, dan $z$. Karena semua sudut putar bernilai $0^\circ$, lengan ini berada dalam posisi lurus memanjang searah sumbu referensinya.
+\begin{equation}
+P = \begin{bmatrix} x \\ y \\ z \end{bmatrix} = 
+\begin{bmatrix} 
+L_1 \cos(\theta_1) + L_2 \cos(\theta_2) + L_3 \cos(\theta_3) \\ 
+L_1 \sin(\theta_1) + L_2 \sin(\theta_2) + L_3 \sin(\theta_3) \\
+d_1 + d_2 + d_3
+\end{bmatrix}
+\end{equation}
+
+Substitusi nilai yang diketahui ke dalam matriks:
+\begin{equation}
+P = \begin{bmatrix} 
+0 \cos(0^\circ) + 0.75 \cos(0^\circ) + 0.65 \cos(0^\circ) \\ 
+0 \sin(0^\circ) + 0.75 \sin(0^\circ) + 0.65 \sin(0^\circ) \\
+0.48 + 0.174 + 0
+\end{bmatrix}
+\end{equation}
+
+Masukkan nilai trigonometrinya ($\cos(0^\circ) = 1$ dan $\sin(0^\circ) = 0$):
+\begin{equation}
+P = \begin{bmatrix} 
+0(1) + 0.75(1) + 0.65(1) \\ 
+0(0) + 0.75(0) + 0.65(0) \\
+0.654
+\end{bmatrix}
+\end{equation}
+
+Lakukan perkalian pada masing-masing elemen \textit{link}:
+\begin{equation}
+P = \begin{bmatrix} 
+0 + 0.75 + 0.65 \\ 
+0 + 0 + 0 \\
+0.654
+\end{bmatrix}
+\end{equation}
+
+Jumlahkan seluruh komponen untuk mendapatkan posisi akhir:
+\begin{equation}
+P = \begin{bmatrix} 
+1.40 \\ 
+0 \\
+0.654
+\end{bmatrix}
+\end{equation}
+
+Jadi, posisi \textit{end-effector} dari lengan artikulasi kinematik 3-DOF tersebut berada pada titik koordinat 3D \textbf{(1.40, 0, 0.654)}.
+
+% \section{Referensi}
+% \printbibliography[heading=none]
 
 
 \end{document}
